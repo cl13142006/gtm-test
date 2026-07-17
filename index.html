@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>GTM & Google Ads 转化测试站</title>
+    
+    <!-- 1. 在这里粘贴您的 GTM 基础代码 (含有 GTM-XXXXXX 的那段) -->
+    <!-- 提示：您可以先空着，或者直接把您的 GTM 代码贴在这里 -->
+
+</head>
+<body>
+
+    <h1>欢迎来到 GTM 测试网站</h1>
+    <p>这是一个用于测试 Google Ads 表单提交转化的临时页面。</p>
+
+    <hr>
+
+    <!-- 简易表单 -->
+    <form id="testForm" onsubmit="submitForm(event)">
+        <label for="username">姓名：</label>
+        <input type="text" id="username" required><br><br>
+        
+        <label for="email">邮箱：</label>
+        <input type="email" id="email" required><br><br>
+        
+        <button type="submit">提交表单</button>
+    </form>
+
+    <!-- 成功提示（默认隐藏） -->
+    <div id="thankYouMessage" style="display:none; color: green; margin-top: 20px;">
+        <h3>🎉 提交成功！感谢您的参与。</h3>
+    </div>
+
+    <script>
+        function submitForm(event) {
+            // 阻止表单默认的跳转刷新行为（模拟现代 AJAX 异步提交）
+            event.preventDefault(); 
+            
+            // 显示成功提示信息
+            document.getElementById('testForm').style.display = 'none';
+            document.getElementById('thankYouMessage').style.display = 'block';
+
+            // 2. 核心：向 GTM 数据层推送成功信号 (dataLayer.push)
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                'event': 'form_submission_success'
+            });
+            
+            console.log('数据层已推送: form_submission_success');
+        }
+    </script>
+
+</body>
+</html>
