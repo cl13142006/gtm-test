@@ -21,51 +21,96 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://ww
     <hr>
 
     <!-- 简易表单 -->
-<form id="testForm" onsubmit="submitForm(event)">
+<form id="testForm">
     <label for="username">姓名：</label>
     <input type="text" id="username" name="username" required><br><br>
-    
+
     <label for="email">邮箱：</label>
     <input type="email" id="email" name="email" required><br><br>
-    
-    <button type="submit">提交表单</button>
+
+    <button type="submit" id="submitBtn">提交表单</button>
 </form>
 
-<!-- 成功提示（默认隐藏） -->
-<div id="thankYouMessage" style="display:none; color: green; margin-top: 20px;">
-    <h3>提交成功！感谢您的参与。</h3>
-</div>
+<!-- 提示框 -->
+<div id="messageBox" style="display:none; margin-top:20px; padding:12px; border-radius:6px;"></div>
 
 <script>
+    document.getElementById('testForm').addEventListener('submit', submitForm);
+
+    function showMessage(message, type) {
+        var messageBox = document.getElementById('messageBox');
+        messageBox.style.display = 'block';
+        messageBox.innerHTML = message;
+
+        if (type === 'success') {
+            messageBox.style.color = '#155724';
+            messageBox.style.backgroundColor = '#d4edda';
+            messageBox.style.border = '1px solid #c3e6cb';
+        } else if (type === 'error') {
+            messageBox.style.color = '#721c24';
+            messageBox.style.backgroundColor = '#f8d7da';
+            messageBox.style.border = '1px solid #f5c6cb';
+        } else {
+            messageBox.style.color = '#0c5460';
+            messageBox.style.backgroundColor = '#d1ecf1';
+            messageBox.style.border = '1px solid #bee5eb';
+        }
+    }
+
+    function hideMessage() {
+        var messageBox = document.getElementById('messageBox');
+        messageBox.style.display = 'none';
+        messageBox.innerHTML = '';
+    }
+
     function submitForm(event) {
         event.preventDefault();
 
         var form = document.getElementById('testForm');
+        var submitBtn = document.getElementById('submitBtn');
         var usernameInput = document.getElementById('username');
         var emailInput = document.getElementById('email');
 
         var usernameValue = usernameInput ? usernameInput.value.trim() : '';
         var emailValue = emailInput ? emailInput.value.trim() : '';
 
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            event: 'form_submission_success',
-            form_id: form ? form.id : '',
-            username: usernameValue,
-            email: emailValue,
-            username_input_id: usernameInput ? usernameInput.id : '',
-            email_input_id: emailInput ? emailInput.id : ''
-        });
+        hideMessage();
+        submitBtn.disabled = true;
+        submitBtn.innerText = '提交中...';
 
-        form.style.display = 'none';
-        document.getElementById('thankYouMessage').style.display = 'block';
+        showMessage('正在模拟 AJAX 提交，请稍候...', 'info');
 
-        console.log('数据层已推送:', {
-            event: 'form_submission_success',
-            form_id: form ? form.id : '',
-            username: usernameValue,
-            email: emailValue
-        });
+        setTimeout(function() {
+            var isSuccess = true;
+
+            if (isSuccess) {
+               // window.dataLayer = window.dataLayer || [];
+               // window.dataLayer.push({
+               //     event: 'form_submission_success',
+                //    form_id: form ? form.id : '',
+                //    username: usernameValue,
+                //    email: emailValue,
+                //    username_input_id: usernameInput ? usernameInput.id : '',
+                 //   email_input_id: emailInput ? emailInput.id : ''
+                //});
+
+                showMessage('提交成功！这是一次模拟 AJAX 提交。', 'success');
+
+                console.log('模拟提交成功，数据层已推送:', {
+                    event: 'form_submission_success',
+                    form_id: form ? form.id : '',
+                    username: usernameValue,
+                    email: emailValue
+                });
+
+                form.reset();
+            } else {
+                showMessage('提交失败，这是一次模拟失败。', 'error');
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.innerText = '提交表单';
+        }, 1200);
     }
 </script>
 
