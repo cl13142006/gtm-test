@@ -21,39 +21,53 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://ww
     <hr>
 
     <!-- 简易表单 -->
-    <form id="testForm" onsubmit="submitForm(event)">
-        <label for="username">姓名：</label>
-        <input type="text" id="username" required><br><br>
-        
-        <label for="email">邮箱：</label>
-        <input type="email" id="email" required><br><br>
-        
-        <button type="submit">提交表单</button>
-    </form>
+<form id="testForm" onsubmit="submitForm(event)">
+    <label for="username">姓名：</label>
+    <input type="text" id="username" name="username" required><br><br>
+    
+    <label for="email">邮箱：</label>
+    <input type="email" id="email" name="email" required><br><br>
+    
+    <button type="submit">提交表单</button>
+</form>
 
-    <!-- 成功提示（默认隐藏） -->
-    <div id="thankYouMessage" style="display:none; color: green; margin-top: 20px;">
-        <h3>🎉 提交成功！感谢您的参与。</h3>
-    </div>
+<!-- 成功提示（默认隐藏） -->
+<div id="thankYouMessage" style="display:none; color: green; margin-top: 20px;">
+    <h3>提交成功！感谢您的参与。</h3>
+</div>
 
-    <script>
-        function submitForm(event) {
-            // 阻止表单默认的跳转刷新行为（模拟现代 AJAX 异步提交）
-            event.preventDefault(); 
-            
-            // 显示成功提示信息
-            document.getElementById('testForm').style.display = 'none';
-            document.getElementById('thankYouMessage').style.display = 'block';
+<script>
+    function submitForm(event) {
+        event.preventDefault();
 
-            // 2. 核心：向 GTM 数据层推送成功信号 (dataLayer.push)
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-                'event': 'form_submission_success'
-            });
-            
-            console.log('数据层已推送: form_submission_success');
-        }
-    </script>
+        var form = document.getElementById('testForm');
+        var usernameInput = document.getElementById('username');
+        var emailInput = document.getElementById('email');
+
+        var usernameValue = usernameInput ? usernameInput.value.trim() : '';
+        var emailValue = emailInput ? emailInput.value.trim() : '';
+
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: 'form_submission_success',
+            form_id: form ? form.id : '',
+            username: usernameValue,
+            email: emailValue,
+            username_input_id: usernameInput ? usernameInput.id : '',
+            email_input_id: emailInput ? emailInput.id : ''
+        });
+
+        form.style.display = 'none';
+        document.getElementById('thankYouMessage').style.display = 'block';
+
+        console.log('数据层已推送:', {
+            event: 'form_submission_success',
+            form_id: form ? form.id : '',
+            username: usernameValue,
+            email: emailValue
+        });
+    }
+</script>
 
 </body>
 </html>
